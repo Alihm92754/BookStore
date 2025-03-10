@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use App\Models\Book;
 use Illuminate\Http\Request;
 
 class BookController extends Controller
@@ -12,7 +13,7 @@ class BookController extends Controller
      */
     public function index()
     {
-        //
+        return Book::all();
     }
 
     /**
@@ -28,7 +29,8 @@ class BookController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $book = Book::create($request->all()); //create new book
+        return response()->json($book, 201); //return the book and 201 status code
     }
 
     /**
@@ -36,7 +38,12 @@ class BookController extends Controller
      */
     public function show(string $id)
     {
-        //
+        $book = Book::find($id); //find the book by id
+        if(!$book) {
+            return response()->json(['message' => 'Book not found'], 404); //return 404 error if book not found
+        }
+
+        return $book; //return the book
     }
 
     /**
@@ -52,7 +59,13 @@ class BookController extends Controller
      */
     public function update(Request $request, string $id)
     {
-        //
+        $book = Book::find($id); //find the book
+        if(!$book) {
+            return response()->json(['message' => 'Book not found'], 404); //return 404 error if book not found
+        }
+
+        $book->update($request->all()); //update the book
+        return response()->json($book, 200); //return the book and 200 status code
     }
 
     /**
@@ -60,6 +73,12 @@ class BookController extends Controller
      */
     public function destroy(string $id)
     {
-        //
+        $book = Book::find($id); //find the book by id
+        if(!$book) {
+            return response()->json(['message' => 'Book not found'], 404); //return 404 error if book not found
+        }
+
+        $book->delete(); //delete the book
+        return response()->json(['message' => 'Book deleted'], 200); //delete the book and 200 status code
     }
 }
